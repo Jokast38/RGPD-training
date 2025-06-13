@@ -1,3 +1,4 @@
+// App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -12,14 +13,23 @@ import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import AuthPage from './pages/AuthPage';
 import { CartProvider } from './context/CartContext';
+import { CookieProvider } from './context/CookieContext';
+import CookieBanner from './components/cookies/CookieBanner';
+import PrivacyPolicyPage from './pages/PolicyPages/PrivacyPolicyPage';
+import CookiePolicyPage from './pages/PolicyPages/CookiePolicyPage';
+import './App.css'; // Import global styles
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <MainLayout />
-      </Router>
-    </CartProvider>
+    <CookieProvider>
+      <CartProvider>
+        <Router>
+          <MainLayout />
+          {/* La bannière de cookies s'affiche en pop-up sur toutes les pages tant qu'on n'a pas répondu */}
+          <CookieBanner popup />
+        </Router>
+      </CartProvider>
+    </CookieProvider>
   );
 }
 
@@ -44,6 +54,9 @@ function MainLayout() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        {/* Route pour la politique de cookies */}
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/cookie-policy" element={<CookiePolicyPage />} />
       </Routes>
       {!shouldHideHeaderFooter && <Footer />}
     </>
