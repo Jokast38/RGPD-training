@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCart } from '../../context/CartContext';
@@ -135,23 +135,13 @@ const ActionIcon = styled.span`
 `;
 
 const ProductDetails = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState(null);
-  const navigate = useNavigate();
+  const { id } = useParams(); // Récupère l'ID du produit depuis l'URL
+  const { addToCart } = useCart();
+  const navigate = useNavigate(); // Hook pour rediriger l'utilisateur
 
-  useEffect(() => {
-    fetch(`http://localhost:8080/produit/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Produit introuvable');
-        return res.json();
-      })
-      .then(data => setProduct(data))
-      .catch(() => setProduct(null));
-  }, [id]);
-
-  // // Convertir l'ID en nombre pour la comparaison
-  // const product = staticProducts.find((p) => p.id === Number(id));
-  // const [selectedImage, setSelectedImage] = useState(product?.image || null);
+  // Convertir l'ID en nombre pour la comparaison
+  const product = staticProducts.find((p) => p.id === Number(id));
+  const [selectedImage, setSelectedImage] = useState(product?.image || null);
 
   const handleAddToCart = () => {
     const token = localStorage.getItem('token'); // Vérifie si l'utilisateur est connecté

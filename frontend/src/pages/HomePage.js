@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-// import { useCart } from '../context/CartContext';
+import { useCart } from '../context/CartContext';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 
@@ -153,33 +153,6 @@ const NewTag = styled.div`
   font-weight: bold;
 `;
 
-// const PromoSection = styled.div`
-//   display: flex;
-//   gap: 20px;
-//   margin-bottom: 40px;
-// `;
-
-// const PromoCard = styled.div`
-//   flex: 1;
-//   background-color: #f8f8f8;
-//   padding: 20px;
-//   border-radius: 4px;
-//   position: relative;
-//   display: flex;
-//   height: 150px;
-// `;
-
-// const PromoContent = styled.div`
-//   flex: 1;
-// `;
-
-// const PromoImage = styled.div`
-//   flex: 1;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// `;
-
 const ShopButton = styled(Link)`
   display: inline-block;
   background-color: #ffd200;
@@ -190,7 +163,6 @@ const ShopButton = styled(Link)`
   font-weight: bold;
   margin-top: 10px;
 `;
-
 
 // Composant pour afficher les étoiles de notation
 const RatingStars = ({ rating }) => {
@@ -205,48 +177,68 @@ const RatingStars = ({ rating }) => {
   return stars;
 };
 
+export const staticProducts = [
+  {
+    id: 1,
+    title: 'Wireless Headphones',
+    brand: 'Sony',
+    image: 'https://i.pinimg.com/736x/d3/ee/50/d3ee501fa265ffb5b9cfe9fbe129da6a.jpg',
+    rating: 4,
+    prix: 99.99,
+    originalPrice: 129.99,
+    discount: 23,
+    isNew: true,
+  },
+  {
+    id: 2,
+    title: 'Smartphone Galaxy S21',
+    brand: 'Samsung',
+    image: 'https://i.pinimg.com/736x/04/af/dc/04afdcb7872fac36829074678c349581.jpg',
+    rating: 5,
+    prix: 799.99,
+    originalPrice: 999.99,
+    discount: 20,
+    isNew: false,
+  },
+  {
+    id: 3,
+    title: 'Gaming Laptop',
+    brand: 'Asus',
+    image: 'https://i.pinimg.com/736x/c0/15/08/c01508f0deb99121cee25dfb9d1ffb71.jpg',
+    rating: 4,
+    prix: 1199.99,
+    originalPrice: 1399.99,
+    discount: 14,
+    isNew: false,
+  },
+  {
+    id: 4,
+    title: '4K Smart TV',
+    brand: 'LG',
+    image: 'https://i.pinimg.com/736x/ff/49/92/ff4992408b1cc04aeabccf2742ecf02c.jpg',
+    rating: 5,
+    prix: 499.99,
+    originalPrice: 599.99,
+    discount: 17,
+    isNew: true,
+  },
+  {
+    id: 5,
+    title: 'Bluetooth Speaker',
+    brand: 'JBL',
+    image: 'https://i.pinimg.com/736x/1b/bf/f6/1bbff66efbc72a62f0570864a39929c7.jpg',
+    rating: 3,
+    prix: 49.99,
+    originalPrice: 59.99,
+    discount: 16,
+    isNew: false,
+  },
+];
+
 const HomePage = () => {
-  // const { addToCart } = useCart(); // <-- Retire si tu n'utilises pas le contexte
+  const { addToCart } = useCart();
   const [activeTab, setActiveTab] = useState('bestseller');
-  const [products, setProducts] = useState([]);
-
-  // Fonction pour ajouter au panier
-  const handleAddToCart = async (productId) => {
-    const userId = localStorage.getItem('userId'); // Assure-toi que l'userId est bien stocké
-    if (!userId) {
-      alert('Vous devez être connecté pour ajouter au panier.');
-      return;
-    }
-    try {
-      const response = await fetch(`http://localhost:8080/cart/add?userId=${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productId: productId,
-          quantity: 1
-        })
-      });
-      if (!response.ok) throw new Error('Erreur lors de l\'ajout au panier');
-      alert('Produit ajouté au panier !');
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  useEffect(() => {
-    // Appel à l'API backend pour récupérer les produits
-    fetch('http://localhost:8080/produit/')
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Erreur lors de la récupération des produits');
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setProducts(data); // Mettre à jour les produits avec les données de l'API
-      })
-      .catch((error) => console.error('Erreur:', error));
-  }, [activeTab]);
+  const [products] = useState(staticProducts);
 
   return (
     <HomeContainer>
@@ -310,48 +302,29 @@ const HomePage = () => {
           </TabsContainer>
         </SectionTitle>
 
-      <ProductsGrid>
-        {products.map(product => (
-          <Link to={`/product/${product.id}`} key={product.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <ProductCard key={product.id}>
-              {product.isNew && <NewTag>New</NewTag>}
-              <ProductImage src={product.image} alt={product.title} />
-              <ProductBrand>{product.brand}</ProductBrand>
-              <Rating>
-                <RatingStars rating={product.rating} />
-              </Rating>
-              <ProductTitle>{product.title}</ProductTitle>
-              <ProductPrice>
-                {product.originalPrice && (
-                  <span className="original-price">${product.originalPrice.toFixed(2)}</span>
-                )}
-                <span className="current-price">
-                  ${product.prix ? product.prix.toFixed(2) : 'N/A'}
-                </span>
-                {product.discount && (
-                  <span className="discount">-{product.discount}% OFF</span>
-                )}
-              </ProductPrice>
-              {/* Ajoute le bouton ici */}
-              <button
-                style={{
-                  marginTop: '10px',
-                  background: '#ffd200',
-                  border: 'none',
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-                type="button"
-                onClick={e => {
-                  e.preventDefault(); // Pour ne pas suivre le lien
-                  handleAddToCart(product.id);
-                }}
-              >
-                Add to Cart
-              </button>
-            </ProductCard>
+        <ProductsGrid>
+          {products.map(product => (
+            <Link to={`/product/${product.id}`} key={product.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <ProductCard key={product.id}>
+                {product.isNew && <NewTag>New</NewTag>}
+                <ProductImage src={product.image} alt={product.title} />
+                <ProductBrand>{product.brand}</ProductBrand>
+                <Rating>
+                  <RatingStars rating={product.rating} />
+                </Rating>
+                <ProductTitle>{product.title}</ProductTitle>
+                <ProductPrice>
+                  {product.originalPrice && (
+                    <span className="original-price">${product.originalPrice.toFixed(2)}</span>
+                  )}
+                  <span className="current-price">
+                    ${product.prix ? product.prix.toFixed(2) : 'N/A'}
+                  </span>
+                  {product.discount && (
+                    <span className="discount">-{product.discount}% OFF</span>
+                  )}
+                </ProductPrice>
+              </ProductCard>
             </Link>
           ))}
         </ProductsGrid>
