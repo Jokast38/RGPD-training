@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useCart } from '../context/CartContext';
+// import { useCart } from '../context/CartContext';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 
@@ -236,7 +236,7 @@ export const staticProducts = [
 ];
 
 const HomePage = () => {
-  const { addToCart } = useCart();
+  // const { addToCart } = useCart();
   const [activeTab, setActiveTab] = useState('bestseller');
   const [products] = useState(staticProducts);
 

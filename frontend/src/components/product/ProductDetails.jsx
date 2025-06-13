@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useCart } from '../../context/CartContext';
+// import { useCart } from '../../context/CartContext';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -136,7 +136,7 @@ const ActionIcon = styled.span`
 
 const ProductDetails = () => {
   const { id } = useParams(); // Récupère l'ID du produit depuis l'URL
-  const { addToCart } = useCart();
+  // const { addToCart } = useCart();
   const navigate = useNavigate(); // Hook pour rediriger l'utilisateur
 
   // Convertir l'ID en nombre pour la comparaison

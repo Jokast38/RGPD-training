@@ -115,7 +115,7 @@ const AuthPage = () => {
             <br />
             <input type="checkbox" />
             <span>Remember me</span>
-            <a href="#">Forgot password?</a>
+            <a href="#forgot-password">Forgot password?</a>
             <button onClick={handleLogin}>Log in</button>
             <hr />
             <p>Or Connect With</p>
@@ -178,7 +178,7 @@ const AuthPage = () => {
             <br />
             <input type="checkbox" />
             <span>Remember me</span>
-            <a href="#">Forgot password?</a>
+            <a href="#forgot-password">Forgot password?</a>
             <button onClick={handleRegister}>Register</button>
             <hr />
             <p>Or Register With</p>
