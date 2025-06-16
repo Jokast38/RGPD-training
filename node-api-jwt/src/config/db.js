@@ -1,19 +1,21 @@
-const mysql = require('mysql');
+const { Sequelize } = require('sequelize');
 
-const db = mysql.createConnection({
-    host: 'mysql-jokast38.alwaysdata.net',
-    user: 'jokast38_admin',
-    password: '7vu.7wciUJ$5Zws',
-    database: 'jokast38_bnk',
-    timezone: 'UTC'
+const sequelize = new Sequelize('jokast38_bnk', 'jokast38_admin', '7vu.7wciUJ$5Zws', {
+  host: 'mysql-jokast38.alwaysdata.net',
+  dialect: 'mysql',
+  timezone: '+00:00',
+  logging: false,
 });
 
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed: ' + err.stack);
-        return;
-    }
-    console.log('Connected to database.');
-});
+async function connexion() {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection to DB has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
 
-module.exports = db;
+connexion();
+
+module.exports = sequelize;

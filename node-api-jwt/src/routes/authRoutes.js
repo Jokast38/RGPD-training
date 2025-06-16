@@ -1,12 +1,14 @@
 const express = require('express');
-const AuthController = require('../controllers/authController');
+const { register, login } = require('../controllers/authController');
+const authenticateToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
-const authController = new AuthController();
 
-router.post('/register', authController.register);
-router.post('/login', authController.login);
+router.post('/register', register);
+router.post('/login', login);
 
-module.exports = function setAuthRoutes(app) {
-    app.use('/api/auth', router);
-};
+router.get('/protected', authenticateToken, (req, res) => {
+  res.json({ message: `Hello ${req.user.username}, you accessed a protected route!` });
+});
+
+module.exports = router;
