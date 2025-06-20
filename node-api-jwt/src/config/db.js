@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('jokast38_bnk', 'jokast38_admin', '7vu.7wciUJ$5Zws', {
+const sequelize = new Sequelize('jokast38_rgpd', 'jokast38_admin', '7vu.7wciUJ$5Zws', {
   host: 'mysql-jokast38.alwaysdata.net',
   dialect: 'mysql',
   timezone: '+00:00',

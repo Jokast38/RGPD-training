@@ -6,39 +6,45 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 const AuthPage = () => {
-  const [isRegister, setIsRegister] = useState(false); // État pour basculer entre Login et Register
+  const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     role: "",
-  }); // État pour stocker les données du formulaire
+  });
 
-  const toggleForm = () => {
-    setIsRegister(!isRegister); // Basculer entre Login et Register
+  const toggleForm = (e) => {
+    e.preventDefault();
+    setIsRegister(!isRegister);
   };
 
-  // Gérer les changements dans les champs du formulaire
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Fonction pour gérer l'inscription
-  const handleRegister = async () => {
+  // Inscription
+  const handleRegister = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8080/users/register", {
+      const response = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        alert("User registered successfully: " + data.username);
-        setIsRegister(false); // Retourner au formulaire de connexion
+        alert("User registered successfully: " + data.user.username);
+        setIsRegister(false);
       } else {
         const error = await response.json();
         alert("Error: " + error.message);
@@ -49,39 +55,26 @@ const AuthPage = () => {
     }
   };
 
-  // Fonction pour gérer la connexion
-  const handleLogin = async () => {
+  // Connexion
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(
-        `http://localhost:8080/users/findByEmail?email=${formData.email}`
-      );
+      const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
       if (response.ok) {
         const data = await response.json();
-        if (data.password === formData.password) {
-          // Stocker le token JWT dans localStorage
-          localStorage.setItem("token", data.token);
-          alert("Login successful for user: " + data.username);
-            // Rediriger vers la page d'accueil ou une autre page après la connexion réussie
-
-            window.location.href = "/"; // Remplacez par la route de votre choix
-        } else if (data.password !== formData.password) {
-          alert("Incorrect password.");
-        }
-        if (data.role === "admin") {
-          alert("Welcome Admin: " + data.username);
-        } else if (data.role === "user") {
-          alert("Welcome User: " + data.username);
-        } else {
-          alert("Invalid role.");
-        }
-        if (data.username === formData.username) {
-          alert("Welcome: " + data.username);
-        } else if (data.username !== formData.username) {
-          alert("Invalid username.");
-        } else {
-          alert("Invalid password.");
-        }
+        alert("Login successful!");
+        window.location.href = "/";
       } else {
         const error = await response.json();
         alert("Error: " + error.message);
@@ -98,25 +91,29 @@ const AuthPage = () => {
         <div className="login">
           <div className="container">
             <h1>Log in</h1>
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <br />
-            <input type="checkbox" />
-            <span>Remember me</span>
-            <a href="#forgot-password">Forgot password?</a>
-            <button onClick={handleLogin}>Log in</button>
+            <form onSubmit={handleLogin}>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <br />
+              <input type="checkbox" id="remember" />
+              <span>Remember me</span>
+              <a href="#forgot-password">Forgot password?</a>
+              <button type="submit">Log in</button>
+            </form>
             <hr />
             <p>Or Connect With</p>
             <hr />
@@ -147,39 +144,45 @@ const AuthPage = () => {
         <div className="register">
           <div className="container">
             <h1>Register</h1>
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              name="role"
-              placeholder="Role"
-              value={formData.role}
-              onChange={handleChange}
-            />
-            <br />
-            <input type="checkbox" />
-            <span>Remember me</span>
-            <a href="#forgot-password">Forgot password?</a>
-            <button onClick={handleRegister}>Register</button>
+            <form onSubmit={handleRegister}>
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                autoComplete="current-password"
+              />
+              <input
+                type="text"
+                name="role"
+                placeholder="Role"
+                value={formData.role}
+                onChange={handleChange}
+              />
+              <br />
+              <input type="checkbox" id="rememberReg" />
+              <span>Remember me</span>
+              <a href="#forgot-password">Forgot password?</a>
+              <button type="submit">Register</button>
+            </form>
             <hr />
             <p>Or Register With</p>
             <hr />
